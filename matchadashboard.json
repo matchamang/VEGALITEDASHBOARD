@@ -1,0 +1,49 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "https://raw.githubusercontent.com/matchamang/Choropleth/main/district.json",
+    "format": {"type": "topojson", "feature": "geodata"}
+  },
+  "transform": [
+    {
+      "lookup": "properties.dcode",
+      "from": {
+        "data": {
+          "url": "https://raw.githubusercontent.com/matchamang/Choropleth/main/Choropleth.csv"
+        },
+        "key": "dcode",
+        "fields": ["green_zone"]
+      }
+    }
+  ],
+  "hconcat": [
+    {
+      "width": 500,
+      "height": 500,
+      "projection": {"type": "Mercator"},
+      "mark": {"type": "geoshape"},
+      "encoding": {
+        "color": {"field": "green_zone", "type": "quantitative"},
+        "opacity": {"condition": {"param": "pts", "value": "1"}, "value": 0.3}
+      }
+    },
+    {
+      "width": 300,
+      "height": 400,
+      "mark": "bar",
+      "params": [
+        {
+          "name": "pts",
+          "select": {"type": "point", "encodings": ["x"], "on": "mouseover"}
+        }
+      ],
+      "encoding": {
+        "x": {"field": "properties.dcode", "type": "nominal"},
+        "y": {"field": "green_zone", "type": "quantitative"},
+        "color": {"field": "green_zone", "type": "quantitative"},
+        "opacity": {"condition": {"param": "pts", "value": 1}, "value": 0.5}
+      }
+    }
+  ],
+  "config": {}
+}
